@@ -6,10 +6,16 @@ from .common import (
     _get_att_composed,
 )
 
-class Jsonizable:
+class Jsonizable(object):
     class Meta:
         schema = None
         expose = None
+
+    def __init__(self):
+        pass
+
+def _isJsonizable(obj):
+    return issubclass(obj, Jsonizable)
 
 
 # Assign read and write function
@@ -22,4 +28,4 @@ Jsonizable._get_att_name = _get_att_name
 Jsonizable._create_attribute = _create_attribute
 
 # Assign constructor
-Jsonizable.__init__ = lambda jsonizable, json : jsonizable.read(json)
+#Jsonizable.__init__ = lambda jsonizable, json : jsonizable.read(json)

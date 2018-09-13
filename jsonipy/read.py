@@ -1,4 +1,4 @@
-from .exceptions import MissingPropertyException
+from jsonipy.exceptions import MissingPropertyException
 
 def read(self, json):
     for name, _type in self.Meta.schema.items():

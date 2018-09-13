@@ -1,0 +1,23 @@
+{
+    "python.unitTest.unittestArgs": [
+        "-v",
+        "-s",
+        "./jsonipy/test/",
+        "-p",
+        "*_test.py"
+    ],
+    "python.unitTest.pyTestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false,
+    "python.unitTest.unittestEnabled": true,
+    "python.jediEnabled": false,
+    "python.pythonPath": "/home/pablo/.environments/smartmonkey-api/bin/python",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+    }
+}
