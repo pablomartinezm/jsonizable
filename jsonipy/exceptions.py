@@ -1,0 +1,2 @@
+class MissingPropertyException(Exception):
+    pass
