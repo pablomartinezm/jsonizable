@@ -1,5 +1,3 @@
-from jsonipy.jsonizable import _isJsonizable
-
 primitive_types = [
     bytes,
     int,
@@ -16,12 +14,12 @@ collection_types = [
 
 builtin_types = primitive_types + collection_types
 
-def _create_attribute(_type, value):
+def _create_attribute(jsonizable, _type, value):
     if value == None:
         return None
     if _type in builtin_types:
         return _type(value)
-    if _isJsonizable(_type):
+    if jsonizable._isJsonizable(_type):
         return _type(value)
     raise Exception('Unknown attribute!')
 

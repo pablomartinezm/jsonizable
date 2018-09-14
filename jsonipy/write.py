@@ -1,9 +1,9 @@
-from .jsonizable import _isJsonizable
 from .exceptions import MissingPropertyException
+from .common import builtin_types
 
 def write(self):
     obj = {}
-    primitives = [bytes, int, str, bool, dict, float]
+    primitives = builtin_types
     for name, _type in self.Meta.schema.items():
         if name[-1] == '?':
             name = name[:-1]
@@ -15,7 +15,7 @@ def write(self):
         if type(_type) != list and type(_type) != set:
             if _type in primitives:
                 obj[name] = getattr(self, name)
-            elif _isJsonizable(_type):
+            elif self._isJsonizable(_type):
                 obj[name] = getattr(self, name).write()
             else:
                 raise Exception("Type `{}` cannot be serialized!".format(_type))
@@ -23,7 +23,7 @@ def write(self):
         elif type(_type) == list:
             if _type[0] in primitives or _type[0] == list:
                 obj[name] = getattr(self, name)
-            elif issubclass(_type[0], _isJsonizable(_type[0])):
+            elif issubclass(_type[0], self._isJsonizable(_type[0])):
                 obj[name] = [x.write() for x in getattr(self, name)]
             else:
                 raise Exception("Type `[{}]` cannot be serialized!".format(_type[0]))

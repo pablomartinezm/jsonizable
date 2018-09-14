@@ -10,7 +10,6 @@
     "python.unitTest.nosetestsEnabled": false,
     "python.unitTest.unittestEnabled": true,
     "python.jediEnabled": false,
-    "python.pythonPath": "/home/pablo/.environments/smartmonkey-api/bin/python",
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,

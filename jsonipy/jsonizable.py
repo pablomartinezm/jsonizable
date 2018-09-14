@@ -11,11 +11,11 @@ class Jsonizable(object):
         schema = None
         expose = None
 
-    def __init__(self):
-        pass
+    def __init__(self, json):
+        self.read(json)
 
-def _isJsonizable(obj):
-    return issubclass(obj, Jsonizable)
+    def _isJsonizable(self, obj):
+        return issubclass(obj, Jsonizable)
 
 
 # Assign read and write function
