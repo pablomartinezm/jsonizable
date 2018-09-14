@@ -1,18 +1,23 @@
 from .exceptions import MissingPropertyException
-from .common import builtin_types
+from .common import builtin_types, primitive_types
 
 def write(self):
     obj = {}
     primitives = builtin_types
     for name, _type in self.Meta.schema.items():
-        if name[-1] == '?':
+        # Check if name is optional or not
+        if is_optional(name):
             name = name[:-1]
+            # If it is not contained in the object move forward
             if name not in dir(self) or not getattr(self, name):
                 continue
+
+        # Check if a non-optional parameter is missing
         elif name not in dir(self):
             raise MissingPropertyException("Property `{}` is not defined in the Object `{}`".format(name, self.__class__.__name__))
-        
-        if type(_type) != list and type(_type) != set:
+
+        # Check if the list is a primitive
+        if is_primitive(_type):
             if _type in primitives:
                 obj[name] = getattr(self, name)
             elif self._isJsonizable(_type):
@@ -33,3 +38,22 @@ def write(self):
             if not obj[name] in _type:
                 raise Exception("Value {} not allowed in the enum {}".format(obj[name], _type))
     return obj
+
+
+def handleEnum(enum, value):
+    pass
+
+def handleList(type, value):
+    pass
+
+def handlePrimitive(type, value):
+    pass
+
+def handleJsonizable(type, value):
+    pass
+
+def is_optional(name):
+    return name[-1] == "?"
+
+def is_primitive(_type):
+    return _type in primitive_types

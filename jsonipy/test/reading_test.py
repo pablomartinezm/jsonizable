@@ -1,6 +1,10 @@
 import unittest
 from jsonipy.jsonizable import Jsonizable
-from jsonipy.exceptions import MissingPropertyException
+from jsonipy.exceptions import (
+    MissingPropertyException,
+    TypeMissmatchException,
+)
+
 
 class TestWriting(unittest.TestCase):
     def test_primitives_read(self):
@@ -30,7 +34,7 @@ class TestWriting(unittest.TestCase):
         self.assertEqual(car.model, "Corolla")
         self.assertEqual(car.reference, b"yes")
         self.assertEqual(car.is_new, False)
-    
+
     def test_primitives_read_assert_type(self):
         # Define a class with three attributes
         class Car(Jsonizable):
@@ -47,7 +51,7 @@ class TestWriting(unittest.TestCase):
         my_json = {
             "wheels": 3,
             "km": 50.85,
-            "model": 21,
+            "model": "Corolla",
             "reference": b"yes",
             "is_new": False,
         }
@@ -74,11 +78,20 @@ class TestWriting(unittest.TestCase):
         # Assert that fails when a property is not set
         with self.assertRaises(MissingPropertyException):
             mb = Motorbike(my_json)
-        
+
+        my_json = {
+            "wheels": "three",
+            "brand": "Kawasaki",
+        }
+
+        # Assert that fails when the type can't be casted
+        with self.assertRaises(TypeMissmatchException):
+            mb = Motorbike(my_json)
+
+
         my_json = {
             "wheels": 3,
             "brand": "Kawasaki",
         }
-
         mb = Motorbike(my_json)
         self.assertEqual(mb.wheels, 3)

@@ -1,6 +1,10 @@
-from jsonipy.exceptions import (
+from .exceptions import (
     MissingPropertyException,
     TypeMissmatchException
+)
+
+from .common import (
+    primitive_types
 )
 
 def read(self, json):
@@ -13,9 +17,11 @@ def read(self, json):
         elif name not in json.keys():
             raise MissingPropertyException("Property `{}` not found in {}".format(name, self.__class__.__name__))
 
-        if type(json[name]) != _type:
-            raise TypeMissmatchException("Property `{}` should be of type {}, but type {} was found instead."
-                .format(name, _type, type(json[name])))
+        if _type in primitive_types:
+            try:
+                _type(json[name])
+            except Exception:
+                raise TypeMissmatchException('Exception in property {}: {} cannot be converted to {}.'.format(name, type(json[name]), _type))
 
         if type(_type) != list:
             setattr(
