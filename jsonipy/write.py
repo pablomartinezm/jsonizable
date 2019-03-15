@@ -1,6 +1,7 @@
 from .exceptions import MissingPropertyException
 from .common import builtin_types, primitive_types
 
+
 def write(self):
     obj = {}
     primitives = builtin_types
@@ -14,7 +15,8 @@ def write(self):
 
         # Check if a non-optional parameter is missing
         elif name not in dir(self):
-            raise MissingPropertyException("Property `{}` is not defined in the Object `{}`".format(name, self.__class__.__name__))
+            raise MissingPropertyException(
+                "Property `{}` is not defined in the Object `{}`".format(name, self.__class__.__name__))
 
         # Check if the list is a primitive
         if is_primitive(_type):
@@ -23,37 +25,49 @@ def write(self):
             elif self._isJsonizable(_type):
                 obj[name] = getattr(self, name).write()
             else:
-                raise Exception("Type `{}` cannot be serialized!".format(_type))
-        
+                raise Exception(
+                    "Type `{}` cannot be serialized!".format(_type))
+
         elif type(_type) == list:
             if _type[0] in primitives or _type[0] == list:
                 obj[name] = getattr(self, name)
             elif issubclass(_type[0], self._isJsonizable(_type[0])):
                 obj[name] = [x.write() for x in getattr(self, name)]
             else:
-                raise Exception("Type `[{}]` cannot be serialized!".format(_type[0]))
-        
+                raise Exception(
+                    "Type `[{}]` cannot be serialized!".format(_type[0]))
+
         elif type(_type) == set:
             obj[name] = getattr(self, name)
             if not obj[name] in _type:
-                raise Exception("Value {} not allowed in the enum {}".format(obj[name], _type))
+                raise Exception(
+                    "Value {} not allowed in the enum {}".format(obj[name], _type))
+
+        elif issubclass(_type[0], self._isJsonizable(_type[0])):
+            obj[name] = [x.write() for x in getattr(self, name)]
+
     return obj
 
 
 def handleEnum(enum, value):
     pass
 
+
 def handleList(type, value):
     pass
+
 
 def handlePrimitive(type, value):
     pass
 
+
 def handleJsonizable(type, value):
     pass
 
+
 def is_optional(name):
     return name[-1] == "?"
+
 
 def is_primitive(_type):
     return _type in primitive_types
