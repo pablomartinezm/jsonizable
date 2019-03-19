@@ -1,12 +1,12 @@
+from .common import builtin_types
+from .common import primitive_types
 from .exceptions import MissingPropertyException
-from .common import builtin_types, primitive_types
 
 
 def write(self):
     obj = {}
     primitives = builtin_types
     for name, _type in self.Meta.schema.items():
-        # Check if name is optional or not
         if is_optional(name):
             name = name[:-1]
             # If it is not contained in the object move forward
@@ -16,7 +16,29 @@ def write(self):
         # Check if a non-optional parameter is missing
         elif name not in dir(self):
             raise MissingPropertyException(
-                "Property `{}` is not defined in the Object `{}`".format(name, self.__class__.__name__))
+                "Property `{}` is not defined in the Object `{}`".format(
+                    name, self.__class__.__name__,
+                ),
+            )
+
+        # Check if the object is jsonizable
+        elif self._isJsonizable(_type):
+            attr = getattr(self, name)
+            if not attr:
+                raise MissingPropertyException(
+                    "Property `{}` should not be None in the Object `{}`"
+                    .format(
+                        name, self.__class__.__name__,
+                    ),
+                )
+            if not type(attr) == _type:
+                raise MissingPropertyException(
+                    "Property `{}` type should be `{}` in the Object `{}`"
+                    .format(
+                        name, _type.__name__, self.__class__.__name__,
+                    ),
+                )
+            obj[name] = getattr(self, name).write()
 
         # Check if the list is a primitive
         if is_primitive(_type):
@@ -26,7 +48,8 @@ def write(self):
                 obj[name] = getattr(self, name).write()
             else:
                 raise Exception(
-                    "Type `{}` cannot be serialized!".format(_type))
+                    "Type `{}` cannot be serialized!".format(_type),
+                )
 
         elif type(_type) == list:
             if _type[0] in primitives or _type[0] == list:
@@ -35,16 +58,17 @@ def write(self):
                 obj[name] = [x.write() for x in getattr(self, name)]
             else:
                 raise Exception(
-                    "Type `[{}]` cannot be serialized!".format(_type[0]))
+                    "Type `[{}]` cannot be serialized!".format(_type[0]),
+                )
 
         elif type(_type) == set:
             obj[name] = getattr(self, name)
             if not obj[name] in _type:
                 raise Exception(
-                    "Value {} not allowed in the enum {}".format(obj[name], _type))
-
-        elif issubclass(_type[0], self._isJsonizable(_type[0])):
-            obj[name] = [x.write() for x in getattr(self, name)]
+                    "Value {} not allowed in the enum {}".format(
+                        obj[name], _type,
+                    ),
+                )
 
     return obj
 

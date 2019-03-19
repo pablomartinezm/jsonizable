@@ -1,19 +1,19 @@
+from .common import _create_attribute
+from .common import _get_att_composed
+from .common import _get_att_name
 from .read import read
 from .write import write
-from .common import (
-    _create_attribute,
-    _get_att_name,
-    _get_att_composed,
-)
+
 
 class Jsonizable(object):
-    
+
     class Meta:
         schema = None
         expose = None
 
-    def __init__(self, json):
-        self.read(json)
+    def __init__(self, json=None):
+        if json:
+            self.read(json)
 
     def _isJsonizable(self, obj):
         return issubclass(obj, Jsonizable)

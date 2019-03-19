@@ -1,15 +1,17 @@
 import unittest
+
+from jsonipy.exceptions import MissingPropertyException
+from jsonipy.exceptions import TypeMissmatchException
 from jsonipy.jsonizable import Jsonizable
-from jsonipy.exceptions import (
-    MissingPropertyException,
-    TypeMissmatchException,
-)
 
 
-class TestWriting(unittest.TestCase):
+class TestReading(unittest.TestCase):
     def test_primitives_read(self):
         # Define a class with three attributes
+
         class Car(Jsonizable):
+            __slots__ = ['wheels', 'km', 'model', 'reference', 'is_new']
+
             class Meta:
                 schema = {
                     "wheels": int,
@@ -19,6 +21,14 @@ class TestWriting(unittest.TestCase):
                     "is_new": bool,
 
                 }
+
+            def __init__(self, json):
+                self.wheels = None
+                self.km = None
+                self.reference = None
+                self.is_new = None
+                self.model = None
+                super().__init__(json=json)
 
         my_json = {
             "wheels": 3,
@@ -48,6 +58,14 @@ class TestWriting(unittest.TestCase):
 
                 }
 
+            def __init__(self, json):
+                self.wheels = None
+                self.km = None
+                self.reference = None
+                self.is_new = None
+                self.model = None
+                super().__init__(json=json)
+
         my_json = {
             "wheels": 3,
             "km": 50.85,
@@ -71,6 +89,11 @@ class TestWriting(unittest.TestCase):
                     "brand": str,
                 }
 
+            def __init__(self, json):
+                self.wheels = None
+                self.brand = None
+                super().__init__(json)
+
         my_json = {
             "wheels": 3,
         }
@@ -87,7 +110,6 @@ class TestWriting(unittest.TestCase):
         # Assert that fails when the type can't be casted
         with self.assertRaises(TypeMissmatchException):
             mb = Motorbike(my_json)
-
 
         my_json = {
             "wheels": 3,
