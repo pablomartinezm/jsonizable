@@ -20,6 +20,35 @@ def write(self):
                     name, self.__class__.__name__,
                 ),
             )
+        # Check if the list is a primitive
+        elif is_primitive(_type):
+            if _type in primitives:
+                obj[name] = getattr(self, name)
+            elif self._isJsonizable(_type):
+                obj[name] = getattr(self, name).write()
+            else:
+                raise Exception(
+                    "Type `{}` cannot be serialized!".format(_type),
+                )
+
+        elif type(_type) == list:
+            if _type[0] in primitives or _type[0] == list:
+                obj[name] = getattr(self, name)
+            elif self._isJsonizable(_type[0]):
+                obj[name] = [x.write() for x in getattr(self, name)]
+            else:
+                raise Exception(
+                    "Type `[{}]` cannot be serialized!".format(_type[0]),
+                )
+
+        elif type(_type) == set:
+            obj[name] = getattr(self, name)
+            if not obj[name] in _type:
+                raise Exception(
+                    "Value {} not allowed in the enum {}".format(
+                        obj[name], _type,
+                    ),
+                )
 
         # Check if the object is jsonizable
         elif self._isJsonizable(_type):
@@ -39,36 +68,6 @@ def write(self):
                     ),
                 )
             obj[name] = getattr(self, name).write()
-
-        # Check if the list is a primitive
-        if is_primitive(_type):
-            if _type in primitives:
-                obj[name] = getattr(self, name)
-            elif self._isJsonizable(_type):
-                obj[name] = getattr(self, name).write()
-            else:
-                raise Exception(
-                    "Type `{}` cannot be serialized!".format(_type),
-                )
-
-        elif type(_type) == list:
-            if _type[0] in primitives or _type[0] == list:
-                obj[name] = getattr(self, name)
-            elif issubclass(_type[0], self._isJsonizable(_type[0])):
-                obj[name] = [x.write() for x in getattr(self, name)]
-            else:
-                raise Exception(
-                    "Type `[{}]` cannot be serialized!".format(_type[0]),
-                )
-
-        elif type(_type) == set:
-            obj[name] = getattr(self, name)
-            if not obj[name] in _type:
-                raise Exception(
-                    "Value {} not allowed in the enum {}".format(
-                        obj[name], _type,
-                    ),
-                )
 
     return obj
 
