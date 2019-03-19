@@ -1,6 +1,6 @@
 import unittest
 
-from jsonipy.jsonizable import Jsonizable
+from jsonizable.jsonizable import Jsonizable
 
 
 class TestWriting(unittest.TestCase):

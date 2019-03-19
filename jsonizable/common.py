@@ -14,8 +14,9 @@ collection_types = [
 
 builtin_types = primitive_types + collection_types
 
+
 def _create_attribute(jsonizable, _type, value):
-    if value == None:
+    if value is None:
         return None
     if _type in builtin_types:
         return _type(value)
@@ -29,7 +30,7 @@ def _get_att_name(jsonizable, name):
     if _name[0] != '$':
         return _name
     return jsonizable._get_att_composed(_name[1:].split('.'))
-    
+
 
 def _get_att_composed(jsonizable, chain):
     name = getattr(jsonizable, chain.pop(0))

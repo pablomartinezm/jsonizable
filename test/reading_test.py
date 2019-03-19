@@ -1,8 +1,8 @@
 import unittest
 
-from jsonipy.exceptions import MissingPropertyException
-from jsonipy.exceptions import TypeMissmatchException
-from jsonipy.jsonizable import Jsonizable
+from jsonizable.exceptions import MissingPropertyException
+from jsonizable.exceptions import TypeMissmatchException
+from jsonizable.jsonizable import Jsonizable
 
 
 class TestReading(unittest.TestCase):
