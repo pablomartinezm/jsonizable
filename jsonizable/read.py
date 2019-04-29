@@ -37,6 +37,13 @@ def read(self, json):
                 self._create_attribute(_type, json[name]),
             )
         elif type(_type) == list:
+            if type(json[name]) != list:
+                raise TypeMissmatchException(
+                    'Exception in class {}: `{}` found, and it should be a list.'
+                    .format(
+                        name, type(json[name])
+                    )
+                )
             setattr(
                 self,
                 name,

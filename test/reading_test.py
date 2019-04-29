@@ -117,3 +117,89 @@ class TestReading(unittest.TestCase):
         }
         mb = Motorbike(my_json)
         self.assertEqual(mb.wheels, 3)
+
+    def test_primitives_read_jsonizable(self):
+        class Wheel(Jsonizable):
+            class Meta:
+                schema = {
+                    "name": str,
+                }
+
+        class Motorbike(Jsonizable):
+            class Meta:
+                schema = {
+                    "wheels": int,
+                }
+
+            def __init__(self, json):
+                self.wheels = None
+                super().__init__(json)
+
+        my_json = {
+            "wheels": {"name": 3},
+        }
+
+        # Assert that fails when a property is not set
+        with self.assertRaises(TypeMissmatchException):
+            mb = Motorbike(my_json)
+
+        my_json = {
+            "wheels": "three",
+            "brand": "Kawasaki",
+        }
+
+        # Assert that fails when the type can't be casted
+        with self.assertRaises(TypeMissmatchException):
+            mb = Motorbike(my_json)
+
+        my_json = {
+            "wheels": 3,
+            "brand": "Kawasaki",
+        }
+        mb = Motorbike(my_json)
+        self.assertEqual(mb.wheels, 3)
+
+    def test_read_list(self):
+        class Wheel(Jsonizable):
+            class Meta:
+                schema = {
+                    "name": [str],
+                }
+
+        my_json = {
+            "name": ['a', 'b', 'c', 'd'],
+        }
+
+        wheel = Wheel(my_json)
+        self.assertEqual(len(wheel.name), 4)
+
+        my_json = {
+            "name": [],
+        }
+        wheel = Wheel(my_json)
+        self.assertEqual(len(wheel.name), 0)
+
+        class Name(Jsonizable):
+            class Meta:
+                schema = {
+                    "a": str
+                }
+
+        class Wheel(Jsonizable):
+            class Meta:
+                schema = {
+                    "name": [Name],
+                }
+
+        my_json = {
+            "name": [{'a': 'b'}, {'a': 'b'}, {'a': 'b'}, {'a': 'b'}],
+        }
+
+        wheel = Wheel(my_json)
+        self.assertEqual(len(wheel.name), 4)
+
+        my_json = {
+            "name": [],
+        }
+        wheel = Wheel(my_json)
+        self.assertEqual(len(wheel.name), 0)

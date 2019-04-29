@@ -14,7 +14,7 @@ def write(self):
                 continue
 
         # Check if a non-optional parameter is missing
-        elif name not in dir(self):
+        if name not in dir(self):
             raise MissingPropertyException(
                 "Property `{}` is not defined in the Object `{}`".format(
                     name, self.__class__.__name__,
@@ -35,6 +35,14 @@ def write(self):
             if _type[0] in primitives or _type[0] == list:
                 obj[name] = getattr(self, name)
             elif self._isJsonizable(_type[0]):
+                _list = getattr(self, name)
+                if _list is None:
+                    raise MissingPropertyException(
+                        "Property `{}` should not be None in the Object `{}`"
+                        .format(
+                            name, self.__class__.__name__,
+                        ),
+                    )
                 obj[name] = [x.write() for x in getattr(self, name)]
             else:
                 raise Exception(
