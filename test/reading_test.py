@@ -203,3 +203,24 @@ class TestReading(unittest.TestCase):
         }
         wheel = Wheel(my_json)
         self.assertEqual(len(wheel.name), 0)
+
+    def test_read_tuple(self):
+        class Wheel(Jsonizable):
+            class Meta:
+                schema = {
+                    "name": tuple,
+                }
+
+        my_json = {
+            "name": ['a', 'b', 'c', 'd'],
+        }
+
+        wheel = Wheel(my_json)
+        self.assertEqual(len(wheel.name), 4)
+        self.assertEqual(type(wheel.name), tuple)
+
+        my_json = {
+            "name": [],
+        }
+        wheel = Wheel(my_json)
+        self.assertEqual(len(wheel.name), 0)

@@ -1,5 +1,5 @@
 from .common import builtin_types
-from .common import primitive_types
+from .common import builtin_types
 from .exceptions import MissingPropertyException
 
 
@@ -21,7 +21,7 @@ def write(self):
                 ),
             )
         # Check if the list is a primitive
-        elif is_primitive(_type):
+        elif is_builtin(_type) or _type == tuple:
             if _type in primitives:
                 obj[name] = getattr(self, name)
             elif self._isJsonizable(_type):
@@ -100,5 +100,5 @@ def is_optional(name):
     return name[-1] == "?"
 
 
-def is_primitive(_type):
-    return _type in primitive_types
+def is_builtin(_type):
+    return _type in builtin_types

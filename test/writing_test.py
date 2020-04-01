@@ -123,3 +123,34 @@ class TestWriting(unittest.TestCase):
                 'model': {'name': 'tesla', 'version': 1},
             },
         )
+
+    def test_write_tuple(self):
+        class Wheel(Jsonizable):
+            class Meta:
+                schema = {
+                    "name": tuple,
+                }
+
+        wheel = Wheel()
+        wheel.name = [1, 2, 3, 4]
+
+        self.assertEqual(wheel.write(), {
+            "name": [1, 2, 3, 4]
+        })
+
+    def test_write_empty_list(self):
+        class Wheel(Jsonizable):
+            class Meta:
+                schema = {
+                    "name": [str],
+                    "name2": list
+                }
+
+        wheel = Wheel()
+        wheel.name = []
+        wheel.name2 = []
+
+        self.assertEqual(wheel.write(), {
+            "name": [],
+            "name2": []
+        })
