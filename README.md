@@ -16,13 +16,13 @@ The recommended way to use this package is defining data schemas for each class.
 ```python
 class Car(Jsonizable):
     class Meta:
-        schema = dict(
-            name=str,
-            model=str,
-            year=int,
-            max_speed=float,
-            is_new=bool,
-        )
+        schema = {
+            "name": str,
+            "model": str,
+            "year": int,
+            "max_speed": float,
+            "is_new": bool,
+        }
 ```
 
 By doing this we will be able to parse and serialize the `Car` object into JSON.
@@ -56,11 +56,11 @@ It is also posible to define collections for our Jsonized classes. We can define
 ```python
 class MyJsonizableClass(Jsonizable):
     class Meta:
-        schema = dict(
-            some_list=list,
-            some_tuple=tuple,
-            some_dict=dict,
-        )
+        schema = {
+            "some_list": list,
+            "some_tuple": tuple,
+            "some_dict": dict,
+        }
 
 json = {
     some_list: [1, 2, "Forest", 4],
@@ -82,11 +82,11 @@ But, in the most of the cases we will want to provide the collection a type, tha
 ```python
 class Lottery(Jsonizable):
     class Meta:
-        schema=dict(
-            first_prize=int,
-            second_prizes=[int],
-            third_prizes=(int, ),
-        )
+        schema = {
+            "first_prize": int,
+            "second_prizes": [int],
+            "third_prizes": (int, ),
+        }
 
 json = {
     "first_prize": 24666123,
@@ -103,7 +103,7 @@ Sometimes our objects will have some optional parameters, that obviously cannot 
 ```python
 class MyQuanticClass(Jsonizable):
     class Meta:
-        schema={
+        schema = {
             "name": str, # This is mandatory parameter
             "state?": int, # This is an optional parameter
         }
@@ -132,7 +132,7 @@ Ok, it was easy until now, simple objects and simple interfaces.  What happens w
 # Define a parent class
 class PetShop(Jsonizable):
     class Meta:
-        schema={
+        schema = {
             "name": str,
             "pets": [Pet],
         }
@@ -146,7 +146,7 @@ class Pet(Jsonizable):
             "price": float,
         }
 
-json={
+json = {
     "name": "Funny puppies",
     "pets": [
         {

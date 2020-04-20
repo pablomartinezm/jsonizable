@@ -1,5 +1,4 @@
 from .common import builtin_types
-from .common import builtin_types
 from .exceptions import MissingPropertyException
 
 
