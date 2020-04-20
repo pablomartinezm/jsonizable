@@ -18,12 +18,11 @@ class Jsonizable(object):
     def _isJsonizable(self, obj):
         return issubclass(obj, Jsonizable)
 
+    # Assign read and write function
+    read = read
+    write = write
 
-# Assign read and write function
-Jsonizable.read = read
-Jsonizable.write = write
-
-# Assign helpers
-Jsonizable._get_att_composed = _get_att_composed
-Jsonizable._get_att_name = _get_att_name
-Jsonizable._create_attribute = _create_attribute
+    # Assign helpers
+    _get_att_composed = _get_att_composed
+    _get_att_name = _get_att_name
+    _create_attribute = _create_attribute
